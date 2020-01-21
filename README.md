@@ -2,6 +2,4 @@
 #### Repo: 2143 Object Oriented Programming Repo
 #### Email: spartridgeb15@gmail.com
 #### Image: 
-![Shaun Partridge]([](url)
-![IMG_0230](https://user-images.githubusercontent.com/47838616/72852852-6a457b00-3c75-11ea-9698-b0f754c597b6.JPG)
-)
+![IMG_0230](https://user-images.githubusercontent.com/47838616/72853230-60704780-3c76-11ea-8562-6457567c43a9.jpg)
