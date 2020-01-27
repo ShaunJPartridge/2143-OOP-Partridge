@@ -32,7 +32,7 @@ using namespace std;
 
 
 int A[100]; // Declaring an array that holds up to 100 integers.
-
+            // This array is also a global variable.
 
 /**
  * Node
