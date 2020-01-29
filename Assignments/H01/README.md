@@ -1,6 +1,6 @@
-* #### Shaun Partridge
-* #### 1/28/2020
-* #### 2143 OOP
+* Shaun Partridge
+* 1/28/2020
+* Class: 2143 OOP
  
 ### **Definitions**
 
