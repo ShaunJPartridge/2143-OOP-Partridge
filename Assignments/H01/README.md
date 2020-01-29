@@ -10,3 +10,9 @@
  to the object. It helps to reduce programming complexity and 
  effort.
 ```
+#### **Attributes**
+```
+ Are data stored inside a class or instance and represent the state
+ or quality of the class or instance.
+ ```
+ 
