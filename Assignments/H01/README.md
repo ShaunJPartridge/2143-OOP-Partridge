@@ -5,10 +5,9 @@
 ### **Definitions**
 
 #### **Abstraction**
-```
- Using data from a larger pool to show only the relevant details
- to the object. It helps to reduce programming complexity and 
- effort.
+``` Using data from a larger pool to show only the relevant details
+    to the object. It helps to reduce programming complexity and 
+    effort.
 ```
 #### **Attributes**
 ```
