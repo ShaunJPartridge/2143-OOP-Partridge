@@ -89,7 +89,7 @@ struct Node {
 
     }
 
-
+    
 
     bool operator<(const Node& rhs) {
         return this->data < rhs.data;
@@ -502,54 +502,29 @@ public:
 
             while (mint) {  // While walking down the list
 
-                if (mint < minp) {
-                    doSwap = 1;
+                if (asc) {  // If asc = true or going in ascending order
+                    doSwap = (*mint < *minp);
                 }
 
-                
-                /*
-                if (asc) { // If asc = true or going in ascending order
-
-
-                    //minp = mint;
-
-                    //minv = mint->data;//minv = mint->data
-
-                    doSwap = (mint < minp);//mint->data < minv
-
-
-
-                }
                 else {
-
-
-                    doSwap = (mint > minp);//mint->data > minv
-
+                    doSwap = (*mint > *minp);
                 }
-                */
-
-
 
                 if (doSwap) {
-
                     minp = mint;
                     minv = mint->data;
-
                 }
 
-                mint = mint->next;
-
+                    mint = mint->next;
+                
+            
             }
-
-
 
             // swap
 
-            minp = Start;//minp->data = Start->data
+            minp->data = Start->data;
 
-            Start->data = minv;//minv->data
-
-
+            Start->data = minv;
 
             Start = Start->next;
 
@@ -591,7 +566,7 @@ int main() {
 
     MyVector<int> V2;
 
-    //bool asc = true;
+    bool asc = true;
 
     Node<int>* N1 = new Node<int>(33);
 
@@ -638,7 +613,7 @@ int main() {
     cout << V3.Size() << endl;
 
     cout << V2 << endl;
-    V2.Sort();
+    V2.Sort(asc);
     cout << V2 << endl;
 
     cout << V3 << endl;
