@@ -17,7 +17,8 @@
 //       onto the end of the list, as well as "pop" items off the end of the list.
 //       This program also implements a templated node struct, that overloads the 
 //       comparison operators, which will allow us to compare nodes directly instead 
-//       of comparing their data.
+//       of comparing their data. This program also creats random strings with both,
+//       lowercase and uppercase letters.
 //
 // Usage:
 //       This program will create three vectors. Two vectors will be the same size and 
@@ -86,7 +87,7 @@ struct Node {
      * Constructor  :  Node 
      *
      * Description:
-     *      Initializes the data members of the MyVector class.
+     *      Initializes the data members of the Node struct.
      *
      * Params:
      *      none
@@ -102,7 +103,7 @@ struct Node {
      * Overloaded Constructor  :  Node 
      *
      * Description:
-     *      Initializes the data members of the MyVector class.
+     *      Initializes the data members of the Node struct.
      *
      * Params:
      *      T d     :  d is whatever type "T" is
@@ -125,11 +126,11 @@ struct Node {
      *      the node "data" straight to the output stream.
      *
      * Params:
-     *      ostream& os     :  an output file
-     *      const Node&     :  a Node object
+     *      ostream& os     :  a output stream object
+     *      const Node&     :  the node to be printed out
      *
      * Returns:
-     *      ostream&        :  an os object that prints the Node's data
+     *      ostream&        :  a output stream object with the Node's data
      */
     friend ostream& operator<<(ostream& os, const Node& obj) {
 
@@ -229,12 +230,6 @@ struct Node {
 };
 
 
-
-// We need to also template the MyVector class because
-// if the Node is templated, then the methods in this class
-// need to be templated as well so the data types can
-// change to match what we need our Node to store.
-
 /**
  * MyVector
  *
@@ -264,15 +259,25 @@ struct Node {
  * Usage:
  *
  *      MyVector<int> V1;               // Create instance of MyVector, V1
- *      MyVector<int> V2(V1);           // Create another instance of MyVector,
- *                                      // V2 with V1's data
+ *      
  *      cout << V1.Size();              // Prints out the vectors size
  *      V1.pushBack(8);                 // Pushes a 8 onto the rear of the vector
  *      V1.pushFront(4);                // Pushes a 4 onto the front of the vector
- *      L.Print();                  // Prints out the list L, which is 7->8->
- *      L.PrintTail();       // Prints out the "Tail" of the list, which is 8
- *      List L3 = L1 + L2;   // Combines lists L1 and L2 to create list, L3
- *      cout << L3[5] << endl; // Gets the sixth element of the linked list
+ *      MyVector<int> V2(V1);           // Create another instance of MyVector,
+ *                                            // V2 with V1's data
+ *
+ *      int val = V1.popBack();         // Deletes 8 from the rear of the vector
+ *                                            // and val gets the value of 8
+ *
+ *      val = V1.popFront();            // Deletes 4 from the front of the vector
+ *                                            // and val gets the value of 4
+ *
+ *      V1.Print();                     // Prints out the vector, which is [4][8]
+ *      V1[1] = 1;                      // Element 2 of V1 now has the value 1
+ *      cout << V1 << endl;             // Prints out [4][1]
+ *      V1 = V1 + V2;                   // Combine vectors V1 and V2, which makes
+ *                                          V1 -> [4][1][4][8]
+ *      V1.Sort(asc);                   // V1 is now [1][4][4][8]
  *
  */
 template <class T>
@@ -282,15 +287,24 @@ class MyVector {
 private:
 
     Node<T>* Head;  // Pointers need to know what type the node will
-
     Node<T>* Tail;  // be storing.
 
     int size;
-
-
-
+    
 public:
-                            // Constructor for MyVector class
+     
+    /**
+     * Constructor  :  MyVector 
+     *
+     * Description:
+     *      Initializes the data members of the MyVector class.
+     *
+     * Params:
+     *      none
+     *
+     * Returns:
+     *      none
+     */
     MyVector() {
 
         Head = Tail = NULL; // Initailizing Head and Tail
@@ -299,369 +313,348 @@ public:
 
     }
 
-
-    // This is a copy constructor.
-    // A copy constructor receives an object of the
-    // same type, and then makes a copy of the incoming
-    // object.
-    // For simple objects, the system can create a copy
-    // constructor on the fly, by when dealing with dynamic
-    // memory we should handle it ourselves. Look at the
-    // readme file to see deep copy vs shallow copy
-    
+    /**
+     * Copy Constructor  :  MyVector 
+     *
+     * Description:
+     *      A copy constructor recieves an object of the same type,
+     *      and then makes a copy of the incoming object. 
+     *
+     * Params:
+     *      const MyVector& obj    :  a MyVector object to be copied
+     *
+     * Returns:
+     *      none
+     */
     MyVector(const MyVector& obj) {
         
-        Head = Tail = NULL;
+        Head = Tail = NULL;     // Initializing variables
         size = 0;
         cout << "Copy Constructor\n";
         Node<T>* Temp = obj.Head;
         
-        while (Temp) {
+        while (Temp) {          // Add nodes to vector
             this->pushBack(Temp->data);
             Temp = Temp->next;
         }
 
     }
 
-
+    /**
+     * Public  :  Size 
+     *
+     * Description:
+     *      Returns the size of the vector
+     *
+     * Params:
+     *      none
+     *
+     * Returns:
+     *      int   :   the vectors size
+     */
     int Size() { return size; }
 
-
-    // we replace every "int" from previous version
-    // with a "T".
-
+     /**
+     * Public  :  pushBack 
+     *
+     * Description:
+     *      Adds a node to the rear of a vector
+     *
+     * Params:
+     *      T d  :  d is whatever data type T is
+     *
+     * Returns:
+     *      void
+     */
     void pushBack(T d) {
 
-        Node<T>* temp = new Node<T>(d);
+        Node<T>* temp = new Node<T>(d);  //Initializing Node* temp
 
-
-
-        if (Head == NULL) {
-
-            Head = temp;
-
+        if (Head == NULL) {     // If the vector is empty,
+            Head = temp;        // temp is the Head and Tail
             Tail = temp;
-
         }
-        else {
-
-            Tail->next = temp;
-
+        else {                  // else add to the rear of the
+            Tail->next = temp;  // vector
             temp->prev = Tail;
-
             Tail = temp;
-
         }
 
-        size++;
-
+        size++;                 // Increment size
     }
 
 
-
+     /**
+     * Public  :  pushFront 
+     *
+     * Description:
+     *      Adds a node to the front of a vector
+     *
+     * Params:
+     *      T d  :  d is whatever data type T is
+     *
+     * Returns:
+     *      void
+     */
     void pushFront(T d) {
 
-        Node<T>* temp = new Node<T>(d);
+        Node<T>* temp = new Node<T>(d);  // Initializing Node* temp
 
-
-
-        if (Head == NULL) {
-
-            Head = temp;
-
+        if (Head == NULL) {     // If the vector is empty,
+            Head = temp;        // temp is the Head and Tail
             Tail = temp;
-
         }
-        else {
-
-            temp->next = Head;
-
+        else {                  // else add to the front of the
+            temp->next = Head;  // vector
             Head->prev = temp;
-
             Head = temp;
-
         }
 
-        size++;
-
+        size++;                 // Increment size
     }
 
-
-
+     /**
+     * Public  :  popBack 
+     *
+     * Description:
+     *      Deletes the rear node of a vector and returns
+     *      its value.
+     *
+     * Params:
+     *      none
+     *
+     * Returns:
+     *      T   :   a nodes data, whatever that might be
+     */
     T popBack() {
 
-        if (Tail) {
-
-            int d = Tail->data;
-
+        if (Tail) {               
+            
+            int d = Tail->data;     // Initializing Variables
             Node<T>* temp = Tail;
-
-            Tail = Tail->prev;
-
-            if (Tail) {
-
-                Tail->next = NULL;
-
+            
+            Tail = Tail->prev;      // If Tail, connect pointers
+            if (Tail) {             // and delete Tail and return
+                Tail->next = NULL;  // Tail->data
             }
             else {
-
                 Head = NULL;
-
             }
-
-
-
             delete temp;
 
-
-
-            size--;
-
-
-
-            return d;
-
+            size--;                 // Decrement size
+            
+            return d;               // Tail->data
         }
-
-
-
-        return -1;
-
+        
+        return -1;                  // Return -1 if the vector is empty
     }
 
 
-
+    /**
+     * Public  :  popFront 
+     *
+     * Description:
+     *      Deletes the front node of a vector and returns
+     *      its value.
+     *
+     * Params:
+     *      none
+     *
+     * Returns:
+     *      T   :   a nodes data, whatever that might be
+     */
     T popFront() {
 
-        if (Head) {
-
-            T d = Head->data;
-
+        if (Head) {                 
+            
+            T d = Head->data;       // Initializing Variables
             Node<T>* temp = Head;
-
-            Head = Head->next;
-
-            if (Head) {
-
-                Head->prev = NULL;
-
+                                    
+            Head = Head->next;      // If Head, connect pointers
+            if (Head) {             // and delete Head and return
+                Head->prev = NULL;  // Head->data
             }
             else {
-
                 Tail = NULL;
-
             }
-
-
-
             delete temp;
 
+            size--;                 // Decrement
 
-
-            size--;
-
-
-
-            return d;
-
+            return d;               // Head->data
         }
 
-        return -1;
-
+        return -1;                  // Returns -1 if the vector is empty
     }
 
 
-
+    /**
+     * Public  :  print 
+     *
+     * Description:
+     *      Traverses a vector and prints out each of its nodes
+     *
+     * Params:
+     *      none
+     *
+     * Returns:
+     *      void
+     */
     void print() {
 
-        Node<T>* temp = Head;
+        Node<T>* temp = Head;      // Initializing Node* temp
 
-
-
-        while (temp) {
-
-            cout << temp->data;
-
+        while (temp) {             // Traversing through vector
+            cout << temp->data;    // and printing out each value
             if (temp->next) {
-
                 cout << "->";
-
             }
-
             temp = temp->next;
-
         }
-
         cout << endl;
-
     }
 
-
-
-    // Again we overload the "<<" operator letting us print a vector
-
-    // straight to the output stream instead of using a "print" function.
-
+    /**
+     * Public  :  friend operator<< 
+     *
+     * Description:
+     *      Overloads the "<<" operator letting us print a vector
+     *      straight to the output stream instead of using a "print"
+     *      function.
+     *
+     * Params:
+     *      ostream& os          :  a output stream object
+     *      const MyVector& obj  :  the vector to be printed out
+     *
+     * Returns:
+     *      ostream&   :   an output stream object with the vectors data
+     */
     friend ostream& operator<<(ostream& os, const MyVector& obj) {
 
-        Node<T>* temp = obj.Head;
-
-
+        Node<T>* temp = obj.Head;   // Initializing Node* temp
 
         while (temp) {
-
-            os << "[";
-
-            os << temp->data;
-
+            os << "[";              // Concatenating the final image of each
+            os << temp->data;       // node in the vector
             os << "]";
-
             if (temp->next) {
-
                 os << "->";
-
             }
-
             temp = temp->next;
-
         }
-
-
 
         return os;
-
     }
-
-
-
-    // Overload the "[]" square brackets so we can treat our list
-
-    // similar to an array. This will let us obtain a value from
-
-    // any existing node, or update that nodes value by assigning it
-
-    // a new one.
-
+    
+    /**
+     * Public  :  operator[] 
+     *
+     * Description:
+     *      Overloads the "[]" square brackets so we can treat our
+     *      vector similar to an array. This will let us obtain
+     *      a value from any existing node, or update that nodes'
+     *      value by assigning it a new one.
+     *
+     * Params:
+     *      int index   :   the index of the vector to be modified
+     *
+     * Returns:
+     *      T&   :   the modified index with a new value
+     */
     T& operator[](int index) {
 
-        if (index >= size) {
-
+        if (index >= size) {       // Checks if index is out of bounds
             cout << "Array index out of bound, exiting";
-
             exit(0);
-
         }
-
-        Node<T>* temp = Head;
-
+        Node<T>* temp = Head;      // Initializing Node* temp
         for (int i = 0; i < index; i++) {
-
             temp = temp->next;
-
         }
 
         return temp->data;
-
     }
 
-
-
-    // This is the "+" plus sign being overloaded to
-
-    // concatenate two lists end to end returning a
-
-    // third new list.
-
+    /**
+     * Public  :  operator+ 
+     *
+     * Description:
+     *      Overloads the "+" plus sign to concatenate
+     *      two vectors end to end returning a third
+     *      new vector
+     *
+     * Params:
+     *      const MyVector& lhs  :  a vector that is already in memory
+     *
+     * Returns:
+     *      T   :   a final vector of the two combined vectors
+     */
     MyVector operator+(const MyVector& lhs) {
 
-        Node<T>* temp1 = Head;
-
+        Node<T>* temp1 = Head;    // Initializing Variables
         Node<T>* temp2 = lhs.Head;
-
-
-
         MyVector V;
-
-
-
-        while (temp1) {
-
+        
+        while (temp1) {         // While loops that concatenate two vectors
             V.pushBack(temp1->data);
-
             temp1 = temp1->next;
-
         }
-
-
 
         while (temp2) {
-
             V.pushBack(temp2->data);
-
             temp2 = temp2->next;
-
         }
 
-
-
         return V;
-
     }
-
-
-
-    // The sort will still work??
-
-    // It should as long as the "T" values are defined
-
-    // to use comparison operators (we will discuss later).
-
-    // For now types like float,string,int will all work.
-
+    
+    /**
+     * Public  :  Sort 
+     *
+     * Description:
+     *      Traverses a vector and puts its values in ascending order
+     *      by comparing two nodes directly and swapping their values.
+     *
+     * Params:
+     *      bool asc   :    is set to true because we want the vector
+     *                      to be in ascending order
+     *
+     * Returns:
+     *      void
+     */
     void Sort(bool asc = true) {//bool asc = true
 
         Node<T>* Start = Head;
-
-
-
+        
         while (Start) {
+            Node<T>* minp = Start;       // Starting minimum position
+            int minv = Start->data;      // Starting minimum value
+            Node<T>* mint = Start;       // Node pointer that walks down list and compares 
+                                         // its value with minv
+            bool doSwap = 0;             // doSwap = false
 
-            Node<T>* minp = Start; // Starting minimum position
+            while (mint) {               // While walking down the list
 
-            int minv = Start->data; // Starting minimum value
-
-            Node<T>* mint = Start; // Node pointer that walks down list and compares 
-                                   // its value with minv
-            bool doSwap = 0; // doSwap = false
-
-
-
-            while (mint) {  // While walking down the list
-
-                if (asc) {  // If asc = true or going in ascending order
-                    doSwap = (*mint < *minp);
+                if (asc) {               // If asc = true or going in ascending order
+                    doSwap = (*mint < *minp); // doSwap = true
                 }
-
                 else {
-                    doSwap = (*mint > *minp);
+                    doSwap = (*mint > *minp); // doSwap = false
                 }
 
-                if (doSwap) {
-                    minp = mint;
-                    minv = mint->data;
-                }
+                if (doSwap) {           // doSwap = true
+                    minp = mint;        
+                    minv = mint->data;  
+                }                       
 
-                    mint = mint->next;
+                    mint = mint->next;  // connect the nodes together
                 
-            
             }
 
-            // swap
-
+            // swap the nodes data
             minp->data = Start->data;
-
             Start->data = minv;
-
             Start = Start->next;
 
         }
@@ -670,26 +663,33 @@ public:
 
 };
 
-
-
-// Griffins cheap random string function
-
-// only does all caps. You should fix it
-
-// to do both upper and lowercase!
-
+/**
+     * Public  :  randString 
+     *
+     * Description:
+     *      Creates a string jumbled with uppercase and lowercase letters
+     *
+     * Params:
+     *      int len   :   the length of the string
+     *
+     * Returns:
+     *      s   :   a jumbled string
+     */
 string randString(int len) {
 
-    string s;
+    string s; // Initializing string to be returned
 
     for (int i = 0; i < len; i++) {
-
+         
+        // AddS 65 to make uppercase letters and add 97 to
+        // make lowercase letters.
         s += char((rand() % 26) + 65);
+        s += char((rand() % 26) + 97);
 
     }
 
-    return s;
-
+    return s;   // Returns a string jumbled with uppercase
+                // and lowercase letter.
 }
 
 
@@ -700,7 +700,6 @@ int main() {
     
     // Instances of our MyVector class
     MyVector<int> V1;
-
     MyVector<int> V2;
 
     bool asc = true;
@@ -712,8 +711,6 @@ int main() {
 
     }
 
-
-
     for (int i = 0; i < 5; i++) {
 
         V2.pushFront(rand() % 100);
@@ -724,43 +721,27 @@ int main() {
     // Creating a third vector, V3, and copying V2's data into it
     MyVector<int> V3(V2);
 
-
-
     cout << V3.Size() << endl;
-
     cout << V2 << endl;
     
-    V2.Sort(asc);   // Sorts vector, V2's data in ascending order
+    V2.Sort(asc);               // Sorts vector, V2's data in ascending order
     
     cout << V2 << endl;
-
     cout << V3 << endl;
 
-
-
-    V2[4] = 0;  // Puts the value 0, into the fifth element of V2
-
-
+    V2[4] = 0;                  // Puts the value 0, into the fifth element of V2
 
     cout << V2 << endl;
-
     cout << V3 << endl;
 
-
-    /*
-    MyVector<string> V4;
-
+    MyVector<string> V4;        // Initializing vectors that hold strings
     MyVector<string> V5;
-
-
-    
-    for (int i = 0; i < 10; i++) {
-
-        V4.pushFront(randString(8));
+  
+    for (int i = 0; i < 10; i++) {  
+                                       // For loops that push chars onto
+        V4.pushFront(randString(8));   // the vectors
 
     }
-
-
 
     for (int i = 0; i < 5; i++) {
 
@@ -768,14 +749,9 @@ int main() {
 
     }
 
-
-
     cout << V4 << endl;
-
     cout << endl;
-
     cout << V5 << endl;
-    */
 
     return 0;
 }
