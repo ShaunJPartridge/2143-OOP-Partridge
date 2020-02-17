@@ -28,4 +28,6 @@
 
 <img src="https://github.com/ShaunJPartridge/2143-OOP-Partridge/blob/master/Images/Bank.png" width="200">
 
+### Whole Diagram
 
+<img src="https://github.com/ShaunJPartridge/2143-OOP-Partridge/blob/master/Images/WholeDiagram.png" width="400">
