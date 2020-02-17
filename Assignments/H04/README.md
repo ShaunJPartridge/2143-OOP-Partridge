@@ -6,26 +6,26 @@
 
 ### Card
 
-![Card](Images/Card.png)
+<img src="https://github.com/ShaunJPartridge/2143-OOP-Partridge/blob/master/Images/Card.png" width="200">
 
 ### Deck
 
-![Deck](Images/Deck.png)
+<img src="https://github.com/ShaunJPartridge/2143-OOP-Partridge/blob/master/Images/Deck.png" width="200">
 
 ### Hand
 
-![Hand](Images/Hand.png)
+<img src="https://github.com/ShaunJPartridge/2143-OOP-Partridge/blob/master/Images/Hand.png" width="200">
 
 ### Player
 
-![Player](Images/Player.png)
+<img src="https://github.com/ShaunJPartridge/2143-OOP-Partridge/blob/master/Images/Player.png" width="200">
 
 ### Poker Game
 
-![PokerGame](Images/Poker Game.png)
+<img src="https://github.com/ShaunJPartridge/2143-OOP-Partridge/blob/master/Images/Poker%20Game.png" width="200">
 
 ### Bank
 
-![Bank](Images/Bank.png)
+<img src="https://github.com/ShaunJPartridge/2143-OOP-Partridge/blob/master/Images/Bank.png" width="200">
 
 
