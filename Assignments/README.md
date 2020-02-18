@@ -6,3 +6,4 @@
 |   04  |  [H01](https://github.com/ShaunJPartridge/2143-OOP-Partridge/tree/master/Assignments/H01) | Basic OOP Terminology |
 |   05  | [H02](https://github.com/ShaunJPartridge/2143-OOP-Partridge/tree/master/Assignments/H02)  | Poker Game Design |
 |   06  | [H03](https://github.com/ShaunJPartridge/2143-OOP-Partridge/tree/master/Assignments/H03)  | Overloading Operators |
+|   07  | [H04](https://github.com/ShaunJPartridge/2143-OOP-Partridge/tree/master/Assignments/H04)  | Poker Game Design |
