@@ -88,7 +88,7 @@ using namespace std;
 
 
 /**
- * Node
+ * Card
  *
  * Description:
  *      This class will create an actual representation of playing cards
