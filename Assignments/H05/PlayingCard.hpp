@@ -146,14 +146,6 @@ class Card {
 
 private:
 
-    const string spade = "♠";
-
-    const string diamond = "♦";
-
-    const string heart = "♥";
-
-    const string club = "♣";
-
     const string suits[4] = {"♠", "♦", "♣", "♥"};
 
     // Colored background      black  , red  , black , red
@@ -199,6 +191,8 @@ public:
     bool operator!=(const Card &);
 
     bool operator()(const Card &);
+
+    void SetForgroundColor(string color)
 
 };
 
