@@ -8,5 +8,5 @@
 |   06  | [H03](https://github.com/ShaunJPartridge/2143-OOP-Partridge/tree/master/Assignments/H03)  | Overloading Operators |
 |   07  | [H04](https://github.com/ShaunJPartridge/2143-OOP-Partridge/tree/master/Assignments/H04)  | Poker Game Design |
 |   09  | [HO5](https://github.com/ShaunJPartridge/2143-OOP-Partridge/tree/master/Assignments/H05)  | Playing Card Class  |
-|   11  | [P01](https://github.com/ShaunJPartridge/2143-OOP-Partridge/tree/master/Assignments/P01)  | Game of War |
-|   13  | [P03]
+|   11  | [P01](https://github.com/ShaunJPartridge/2143-OOP-Partridge/tree/master/Assignments/P01)  | Game of War Program |
+|   13  | [P03](https://github.com/ShaunJPartridge/2143-OOP-Partridge/tree/master/Assignments/P03)  | COVID-19 Class Design |
