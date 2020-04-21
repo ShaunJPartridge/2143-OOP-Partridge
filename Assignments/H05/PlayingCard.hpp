@@ -192,7 +192,7 @@ public:
 
     bool operator()(const Card &);
 
-    void SetForgroundColor(string color)
+    void SetForgroundColor(string color);
 
 };
 

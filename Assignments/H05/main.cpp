@@ -1,6 +1,8 @@
-#include "poker_game.hpp"
+#include "termio.h"
+#include "PlayingCard2.hpp"
+#include <string>
 
-
+using namespace std;
 
 int main() {
 
@@ -10,17 +12,10 @@ int main() {
 
 
 
-    Deck D(52);
-
-
-
-
 
     for(int i=0;i<50;i++){
 
-        D.Shuffle();
-
-        D.Print(5,true);
+      
 
         io << Term::sleep(200); 
 
