@@ -1,167 +1,204 @@
 
-"""
-This just spawns a bunch of "people" (pac man ghosts) and
-has them float around the screen. 
-Most config values are controlled by global vals at top of file.
-This also has a person class, mostly to show a basic python class,
-as well as give basic example with pygame integration. We can do
-better and we will later.
-"""
+# Import and initialize the pygame library
 import pygame
-import sys
 import random
+import math
+from config import Config
 
-# Global Values 
-SCREEN_WIDTH = 640
-SCREEN_HEIGHT = 480
-SPRITE_SIZE = 30
-SPRITE_SPEED = 2
-
-# direction lists (or arrays if you like)
-# -1 = move left  or up
-#  1 = move right or down
-XDirection = [-1,1]
-YDirection = [-1,1]
+"""
+Pygame hello world: Print a circle in middle of screen.
+dictionary {} key value pairs
+list [] collection of anything
+tuple () a "set" immutable
+L = [10,"hello","goodbye",3.14159,[0,1,2,3,4]]
+print(L[4][2])
+Data = {"infected":3456789,"immune":9,"susceptible":74747474,"dead_names":["terry","whoever"]}
+print(Data["dead_names"][0])
+x,y = (34,78)
+"""
 
 
 class Person(pygame.sprite.Sprite):
-    """Person : Inherits from pygame Sprite
     """
-    def __init__(self, pos, width, height):
+    This class represents the ball.
+    It derives from the "Sprite" class in Pygame
+    """
+ 
+    def __init__(self,screen_width,screen_height,color,width=15,height=15,speed=7):
+        """ Constructor. Pass in the color of the block,
+        and its size. """
+         # Call the parent class (Sprite) constructor
         super().__init__()
-        self.size = SPRITE_SIZE             # size of sprite :) 
-        self.width = width                  # game board width
-        self.height = height                # game board height
-        self.image = pygame.image.load('./images/pacman-30x30.png')  # use image for sprite
-        self.rect = self.image.get_rect(center=pos)         # kinda the "sprite" container
-        self.speed = SPRITE_SPEED           # pixel moves per game loop
-        self.dx = 0                         # x direction 
-        self.dy = 0                         # y direction
 
-    def dir_x(self,x):
-        """Set the x direction for the person (east/west). Invoke using the move method.
-        """
-        self.dx += x
+        self.state = "susceptible"
 
-    def dir_y(self,y):
-        """Set the y direction for the person (east/west). Invoke using the move method.
-        """
-        self.dy += y
+        self.screen_width = screen_width
+        self.screen_height = screen_height
 
-    def move (self,dx=None,dy=None):
-        """Invoke to move a person in any cardinal direction by re-setting dx and/or dy.
-        """
-        self.check_off_game_board()
+        self.width = width
+        self.height = height
 
-        if dx != None:
-            self.dx = dx
-            
-        self.rect.x += (self.dx * self.speed)
+        self.dx = random.choice([-1,1])
+        self.dy = random.choice([-1,1])
 
-        if dy != None:
-            self.dy = dy
-            
-        self.rect.y += (self.dy * self.speed)
+        # pixels per game loop
+        self.speed = speed
+        self.speed = speed
+
+        self.color = color
+
+        # Create an image of the block, and fill it with a color.
+        # This could also be an image loaded from the disk.
+
     
-    def check_off_game_board(self):
-        """ This method checks if a sprites x,y coordinates are off the game board.
-            If they are below 0, we make them 1 and if they are greater than the 
-            width or the height, we make them (width/height - sprite.size).
-            Also, if sprite goes off game board, we reverse the direction of the sprite. 
+        self.image = pygame.image.load(Config.sprite_images[self.color]) 
+
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+ 
+        # Fetch the rectangle object that has the dimensions of the image.
+        # Update the position of this object by setting the values
+        # of rect.x and rect.y
+
+        x = int(random.random()*self.screen_width)
+        y = int(random.random()*self.screen_height)
+
+        self.rect = self.image.get_rect(center=(x,y))
+
+
+    def move(self):
+        # ones = [1] * 10
+        # negs = [-1] * 5
+
+        # rdx = ones+negs
+        # rdy = ones+negs
+
+        # random.shuffle(rdx)
+        # random.shuffle(rdy)
+
+        self.check_bounds()
+
+        self.rect.x += self.speed * self.dx
+        self.rect.y += self.speed * self.dy
+
+    def check_bounds(self):
+
+        if self.rect.x >= self.screen_width or self.rect.x <= 0:
+            self.dx *= -1
+        
+        if self.rect.y >= self.screen_height or self.rect.y <= 0:
+            self.dy *= -1
+
+    def determineSides(self, other):
+        """ Determines where the sprite is in relation to other, kind of like
+            "top left" or "bottom right".
+            Returns: List of sides  (e.g ['right','bottom'])
         """
+        d = []
+        if self.rect.midtop[1] < other.rect.midtop[1]:
+            d.append("top")
+        if self.rect.midleft[0] < other.rect.midleft[0]:
+            d.append("left")
+        if self.rect.midright[0] > other.rect.midright[0]:
+            d.append("right")
+        if self.rect.midbottom[1] > other.rect.midbottom[1]:
+            d.append("bottom")
 
-        if self.rect.y <= 0:                               # if y off screen top reverse direction
-            self.dy *= -1
-            self.rect.y = 1
-        elif self.rect.y >= self.height - self.size:       # if y off screen bottom reverse direction
-            self.dy *= -1
-            self.rect.y = self.height-30
-
-        if self.rect.x <= 0:                               # if x off screen left reverse direction
+        return d
+    
+    def changeDirection(self,other):
+        sides = self.determineSides(other)
+        if "right" in sides:
             self.dx *= -1
-            self.rect.x = 1
-        elif self.rect.x >= self.width - self.size:        # if x off screen right reverse direction
+        if "left" in sides:
             self.dx *= -1
-            self.rect.x = self.width-30
+        if "top" in sides:
+            self.dy *= -1
+        if "bottom" in sides:
+            self.dy *= -1
 
-def main():
-    # If you run program with a number after the file name like:
-    #       python3 01_sim_start.py 50
-    # then you will get 50 people in your sim
-    if len(sys.argv)  > 1:
-        try:
-            num_people = sys.argv[1] + 1
-        except TypeError:
-            print("Error: Parameter should have been an integer.")
-    else:
-        num_people = 20
+    def collide(self,other, social_distance=20):
 
-    # Initialize PyGame
+        # if not other.state == "infected":
+        #     return
+
+        x1, y1 = self.rect.center
+        x2, y2 = other.rect.center
+
+        d = math.sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2))
+
+        if d < social_distance:
+            self.changeDirection(other)
+
+        if d < self.width:
+            self.image = pygame.image.load(Config.sprite_images["red"]) 
+            self.image = pygame.transform.scale(self.image, (self.width, self.height))
+
+
+        # if abs(self.rect.x - other.rect.x) < self.width and abs(self.rect.y - other.rect.y) < self.height:
+        #     self.image = pygame.image.load(sprite_images["red"]) 
+        #     self.image = pygame.transform.scale(self.image, (self.width, self.height))
+            
+
+
+if __name__=='__main__':
     pygame.init()
 
-    # Get a reference to the screen
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    # Set up the drawing window
+    screen = pygame.display.set_mode([Config.width, Config.height])
 
-    # Not Sure :) 
-    clock = pygame.time.Clock()
+    # sprites should be in a group
+    sprites_list = pygame.sprite.Group()
 
-    # Create a Pygame Group
-    # A group allows minipulation to the entire group OR
-    # manipulating one member at a time. Nice to have the option
-    population = pygame.sprite.Group()
+    # a list to hold all of our people sprites
+    people = []
 
-    # Set up 20 "people" and place them at random locations on the screen
-    for _ in range(num_people):
-        # pick a random position
-        posx = int(random.random()*590) + 15
-        posy = int(random.random()*420) + 15
+    # list of colors
+    colors = ["blue","light_blue","white","yellow","orange","green"]
+    speeds = [x for x in range(1,3)]
 
-        # create a position tuple
-        pos = (posx,posy)
 
-        # create a person
-        p = Person(pos,640,480)
+    for i in range(100):
+        # add a "person" to our list of people
+        # create an "instance" of our class
+        people.append(Person(Config.width, Config.height, random.choice(colors),15,15,1)) #random.choice(speeds)
 
-        # shuffle the direction arrays
-        random.shuffle(XDirection)
-        random.shuffle(YDirection)
+        # Add last person to our sprites list
+        # list[-1] give you the last item
+        sprites_list.add(people[-1])  
 
-        # assign xy direction to a person
-        p.dir_x(XDirection[0])
-        p.dir_y(YDirection[0])
+        clock=pygame.time.Clock()
 
-        # add person to the population
-        population.add(p)
+    # Run until the user asks to quit
+    running = True
 
-    # keep looping while we are not done!
-    done = False
-    
-    # Game loop
-    while not done:
-        # Check for interaction with game window (some event)
+    while running:
+
+        # Did the user click the window close button?
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                done = True
+                running = False
 
-        #population.update()
-        
-        # for every person "p" call he move method
-        for p in population:
+        # Fill the background with white
+        screen.fill( (30, 30, 30) )
+
+        red = 0
+        green = 0
+        blue = 255
+
+        sprites_list.draw(screen)
+
+        for p in people:
             p.move()
+            for sp in people:
+                if not p == sp:
+                    p.collide(sp)
 
-        # redraw the screen with r30 g30 b30 (basically almost black)
-        screen.fill((30, 30, 30))
 
-        # draw the "population" group onto the "screen"
-        population.draw(screen)
-
-        # Draw a rect over the selected sprite.
-        #pygame.draw.rect(screen, (255, 128, 0), selected_person.rect, 2)
-
+        # Flip the display
         pygame.display.flip()
-        clock.tick(30)
 
+        #Number of frames per secong e.g. 60
+        clock.tick(40)
 
-if __name__ == '__main__':
-    main()
+    # Done! Time to quit.
     pygame.quit()
